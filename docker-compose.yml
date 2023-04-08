@@ -1,0 +1,44 @@
+version: "3"
+
+volumes:
+  server-certs:
+  server-acme:
+  server-vhost.d:
+  server-html:
+
+networks:
+  proxy:
+    name: shared-proxy
+
+services:
+  # Reverse proxy server to serve the other proxied web services
+  proxy-server:
+    build: ./proxy-server
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    volumes:
+      - server-certs:/etc/nginx/certs:z,ro
+      - server-vhost.d:/etc/nginx/vhost.d:z
+      - server-html:/usr/share/nginx/html:z
+      - /var/run/docker.sock:/tmp/docker.sock:z,ro
+    networks:
+      - proxy
+
+  # Lets encrypt companion service to accept https queries
+  proxy-server-ssl-companion:
+    image: nginxproxy/acme-companion:latest
+    restart: always
+    volumes:
+      - server-certs:/etc/nginx/certs:z
+      - server-acme:/etc/acme.sh:z
+      - server-vhost.d:/etc/nginx/vhost.d:z
+      - server-html:/usr/share/nginx/html:z
+      - /var/run/docker.sock:/var/run/docker.sock:z,ro
+    networks:
+      - proxy
+    depends_on:
+      - proxy-server

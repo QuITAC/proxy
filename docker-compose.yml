@@ -1,44 +1,31 @@
 version: "3"
 
-volumes:
-  server-certs:
-  server-acme:
-  server-vhost.d:
-  server-html:
-
 networks:
   proxy:
     name: shared-proxy
 
 services:
-  # Reverse proxy server to serve the other proxied web services
-  proxy-server:
-    build: ./proxy-server
+  traefik:
+    image: traefik:v2.9.10
     restart: always
+    command:
+      - "--providers.docker"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network=traefik_web"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.http.http.redirections.entrypoint.to=https"
+      - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.https.address=:443"
+      - "--entrypoints.https.http.tls.certResolver=le"
+      - "--certificatesresolvers.le.acme.tlschallenge=true"
+      - "--certificatesresolvers.le.acme.email=deine@mail.de"
+      - "--certificatesresolvers.le.acme.storage=/cert/acme.json"
     ports:
-      - 80:80
-      - 443:443
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
     volumes:
-      - server-certs:/etc/nginx/certs:z,ro
-      - server-vhost.d:/etc/nginx/vhost.d:z
-      - server-html:/usr/share/nginx/html:z
-      - /var/run/docker.sock:/tmp/docker.sock:z,ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
     networks:
       - proxy
-
-  # Lets encrypt companion service to accept https queries
-  proxy-server-ssl-companion:
-    image: nginxproxy/acme-companion:latest
-    restart: always
-    volumes:
-      - server-certs:/etc/nginx/certs:z
-      - server-acme:/etc/acme.sh:z
-      - server-vhost.d:/etc/nginx/vhost.d:z
-      - server-html:/usr/share/nginx/html:z
-      - /var/run/docker.sock:/var/run/docker.sock:z,ro
-    networks:
-      - proxy
-    depends_on:
-      - proxy-server

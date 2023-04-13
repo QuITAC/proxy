@@ -18,7 +18,7 @@ services:
       - "--entrypoints.https.address=:443"
       - "--entrypoints.https.http.tls.certResolver=le"
       - "--certificatesresolvers.le.acme.tlschallenge=true"
-      - "--certificatesresolvers.le.acme.email=deine@mail.de"
+      - "--certificatesresolvers.le.acme.email=<ref_mail>"
       - "--certificatesresolvers.le.acme.storage=/cert/acme.json"
     ports:
       - "80:80"

@@ -31,7 +31,7 @@ services:
   server:
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.<uniquearbitraryroutername>.rule=Host('<Hostname>')"
+      - "traefik.http.routers.<uniquearbitraryroutername>.rule=Host(`<Hostname>`)" #` instead of ' quotation mark!
     networks:
       - proxy
       - default

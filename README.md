@@ -5,7 +5,13 @@ Traefik web proxy for the different docker web services of Queerreferat Aachen
 ## setup
 
 1. replace `<ref_mail>` with our mail address
-2. launch the proxy server using `docker compose up -`
+2. edit the `bash_rc` and add
+
+```bash
+export DOCKER_PATH=$XDG_RUNTIME_DIR/docker.sock
+```
+
+3. launch the proxy server using `docker compose up -`
 
 ## usage
 

@@ -21,8 +21,8 @@ services:
       - "--certificatesresolvers.le.acme.email=<ref_mail>"
       - "--certificatesresolvers.le.acme.storage=/acme.json"
     ports:
-      - "80:80"
-      - "443:443"
+      - "1080:80" #ports 1080 and 1443 because of manipulation of ip tables
+      - "1443:443"
       - "8080:8080"
     volumes:
       - "${DOCKER_PATH}:/var/run/docker.sock:ro"

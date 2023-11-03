@@ -2,37 +2,41 @@ version: "3"
 
 networks:
   proxy:
-    name: shared-proxy
+    name: proxy
 
 services:
   traefik:
-    image: traefik:v2.9.10
+    image: traefik:latest
     restart: always
     command:
+      - "--log.level=DEBUG"
       - "--providers.docker"
       - "--providers.docker.exposedByDefault=false"
-      - "--providers.docker.network=shared-proxy"
+      - "--providers.docker.network=proxy"
       - "--entrypoints.http.address=:80"
       - "--entrypoints.http.http.redirections.entrypoint.to=https"
       - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.https.address=:443"
       - "--entrypoints.https.http.tls.certResolver=le"
       - "--certificatesresolvers.le.acme.tlschallenge=true"
-      - "--certificatesresolvers.le.acme.email=mail@christian-koch.eu"
-      - "--certificatesresolvers.le.acme.storage=/acme.json"
-    labels:
-      - "traefik.http.middlewares.authelia.forwardAuth.address=http://authelia:9091/api/verify?rd=https%3A%2F%2Fsso.queerreferat.ac%2F"
-      - "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader=true"
-      - "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
-      - "traefik.http.middlewares.authelia-basic.forwardAuth.address=http://authelia:9091/api/verify?auth=basic"
-      - "traefik.http.middlewares.authelia-basic.forwardAuth.trustForwardHeader=true"
-      - "traefik.http.middlewares.authelia-basic.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
+      - "--certificatesresolvers.le.acme.email=it@queerreferat-aachen.de"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+    # labels:
+    #   - "traefik.http.middlewares.authelia.forwardAuth.address=http://authelia:9091/api/verify?rd=https%3A%2F%2Fsso.queerreferat.ac%2F"
+    #   - "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader=true"
+    #   - "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
+    #   - "traefik.http.middlewares.authelia-basic.forwardAuth.address=http://authelia:9091/api/verify?auth=basic"
+    #   - "traefik.http.middlewares.authelia-basic.forwardAuth.trustForwardHeader=true"
+    #   - "traefik.http.middlewares.authelia-basic.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
     ports:
-      - "1080:80"
-      - "1443:443"
+      - "80:80"
+      - "443:443"
       - "8080:8080"
     volumes:
       - "${DOCKER_PATH}:/var/run/docker.sock:ro"
       - ./letsencrypt:/letsencrypt
     networks:
       - proxy
+    env_file:
+      - .env

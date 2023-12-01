@@ -6,7 +6,7 @@ providers:
     exposedByDefault: False
     network: proxy
   file:
-    directory: ../nextcloud
+    directory: "/etc/traefik/providers"
     watch: true
 
 entrypoints:
@@ -21,13 +21,22 @@ entrypoints:
   websecure:
     address: ":443"
     http:
+      # middlewares:
+      #   - secure-headers
       tls:
         certResolver: leresolver
 
-certificateresolvers:
+certificatesResolvers:
   leresolver:
     acme:
       tlschallenge: true
       email: it@queerreferat-aachen.de
       storage: /letsencrypt/acme.json
       caserver: https://acme-staging-v02.api.letsencrypt.org/directory
+
+# middlewares:
+#   secure-headers:
+#     headers:
+#       hostsProxyHeaders:
+#         - "X-Forwarded-Host"
+#       referrerPolicy: "same-origin"

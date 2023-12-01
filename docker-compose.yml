@@ -8,27 +8,23 @@ services:
   traefik:
     image: traefik:latest
     restart: always
-    command:
-      - "--log.level=DEBUG"
-      - "--providers.docker"
-      - "--providers.docker.exposedByDefault=false"
-      - "--providers.docker.network=proxy"
-      - "--entrypoints.http.address=:80"
-      - "--entrypoints.http.http.redirections.entrypoint.to=https"
-      - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
-      - "--entrypoints.https.address=:443"
-      - "--entrypoints.https.http.tls.certResolver=le"
-      - "--certificatesresolvers.le.acme.tlschallenge=true"
-      - "--certificatesresolvers.le.acme.email=it@queerreferat-aachen.de"
-      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
-      - "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-    # labels:
-    #   - "traefik.http.middlewares.authelia.forwardAuth.address=http://authelia:9091/api/verify?rd=https%3A%2F%2Fsso.queerreferat.ac%2F"
-    #   - "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader=true"
-    #   - "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
-    #   - "traefik.http.middlewares.authelia-basic.forwardAuth.address=http://authelia:9091/api/verify?auth=basic"
-    #   - "traefik.http.middlewares.authelia-basic.forwardAuth.trustForwardHeader=true"
-    #   - "traefik.http.middlewares.authelia-basic.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
+
+    # handled through traefik.yml
+    # command:
+    #   - "--log.level=DEBUG"
+    #   - "--providers.docker"
+    #   - "--providers.docker.exposedByDefault=false"
+    #   - "--providers.docker.network=proxy"
+    #   - "--entrypoints.http.address=:80"
+    #   - "--entrypoints.http.http.redirections.entrypoint.to=https"
+    #   - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
+    #   - "--entrypoints.https.address=:443"
+    #   - "--entrypoints.https.http.tls.certResolver=le"
+    #   - "--certificatesresolvers.le.acme.tlschallenge=true"
+    #   - "--certificatesresolvers.le.acme.email=it@queerreferat-aachen.de"
+    #   - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+    #   - "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+
     ports:
       - "80:80"
       - "443:443"
@@ -36,6 +32,7 @@ services:
     volumes:
       - "${DOCKER_PATH}:/var/run/docker.sock:ro"
       - ./letsencrypt:/letsencrypt
+      - ./traefik.yml:/etc/traefik/traefik.yml
     networks:
       - proxy
     env_file:

@@ -1,0 +1,30 @@
+log:
+  level: DEBUG
+
+providers:
+  docker:
+    exposedByDefault: False
+    network: proxy
+
+entrypoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: leresolver
+
+certificateresolvers:
+  leresolver:
+    acme:
+      tlschallenge: true
+      email: it@queerreferat-aachen.de
+      storage: /letsencrypt/acme.json
+      caserver: https://acme-staging-v02.api.letsencrypt.org/directory

@@ -5,6 +5,9 @@ providers:
   docker:
     exposedByDefault: False
     network: proxy
+  file:
+    directory: ../nextcloud
+    watch: true
 
 entrypoints:
   web:

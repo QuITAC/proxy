@@ -12,9 +12,6 @@ providers:
   docker:
     exposedByDefault: False
     network: proxy
-  file:
-    directory: "/etc/traefik/providers"
-    watch: true
 
 entrypoints:
   web:

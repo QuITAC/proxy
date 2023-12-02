@@ -33,7 +33,6 @@ services:
       - "${DOCKER_PATH}:/var/run/docker.sock:ro"
       - ./letsencrypt:/letsencrypt
       - ./traefik.yml:/etc/traefik/traefik.yml
-      - ../nextcloud/nextcloud.yml:/etc/traefik/providers/nextcloud.yml
     networks:
       - proxy
     env_file:

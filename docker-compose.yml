@@ -8,23 +8,6 @@ services:
   traefik:
     image: traefik:latest
     restart: always
-
-    # handled through traefik.yml
-    # command:
-    #   - "--log.level=DEBUG"
-    #   - "--providers.docker"
-    #   - "--providers.docker.exposedByDefault=false"
-    #   - "--providers.docker.network=proxy"
-    #   - "--entrypoints.http.address=:80"
-    #   - "--entrypoints.http.http.redirections.entrypoint.to=https"
-    #   - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
-    #   - "--entrypoints.https.address=:443"
-    #   - "--entrypoints.https.http.tls.certResolver=le"
-    #   - "--certificatesresolvers.le.acme.tlschallenge=true"
-    #   - "--certificatesresolvers.le.acme.email=it@queerreferat-aachen.de"
-    #   - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
-    #   - "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-
     ports:
       - "80:80"
       - "443:443"

@@ -29,7 +29,7 @@ certificatesResolvers:
       tlschallenge: true
       email: it@queerreferat-aachen.de
       storage: /letsencrypt/acme.json
-      caserver: https://acme-staging-v02.api.letsencrypt.org/directory
+      # caserver: https://acme-staging-v02.api.letsencrypt.org/directory
 
 # middlewares:
 #   secure-headers:

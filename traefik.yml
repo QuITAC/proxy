@@ -31,6 +31,9 @@ certificatesResolvers:
       storage: /letsencrypt/acme.json
       # caserver: https://acme-staging-v02.api.letsencrypt.org/directory
 
+api:
+  dashboard: true
+
 # middlewares:
 #   secure-headers:
 #     headers:
